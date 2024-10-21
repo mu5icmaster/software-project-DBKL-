@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Picture and Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #preview {
+            display: block;
+            margin: 20px 0;
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+        #output {
+            margin-top: 20px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Submit your details</h1>
+    <form id="submitForm" enctype="multipart/form-data">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br><br>
+
+        <label>Take a picture:</label>
+        <video id="video" width="300" height="300" autoplay></video>
+        <button id="captureBtn" type="button">Capture Photo</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <img id="preview" src="" alt="Captured Image"><br><br>
+
+        <button id="getLocationBtn" type="button">Get Location</button>
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const preview = document.getElementById('preview');
+        const captureBtn = document.getElementById('captureBtn');
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const submitForm = document.getElementById('submitForm');
+        const output = document.getElementById('output');
+
+        // Access the user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing camera: ', error);
+            });
+
+        // Capture the photo
+        captureBtn.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const imageData = canvas.toDataURL('image/png');
+            preview.src = imageData;
+        });
+
+        // Get the user's location
+        getLocationBtn.addEventListener('click', () => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                latitudeInput.value = position.coords.latitude;
+                longitudeInput.value = position.coords.longitude;
+            });
+        });
+
+        // Handle form submission
+        submitForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('photo', preview.src);
+            formData.append('latitude', latitudeInput.value);
+            formData.append('longitude', longitudeInput.value);
+
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                output.textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
