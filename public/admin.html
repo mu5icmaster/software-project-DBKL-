@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps with Status Markers</title>
+    <style>
+        /* Set the layout with top and bottom sections */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top half for map */
+        #map {
+            height: 50%;
+            width: 100%;
+        }
+
+        /* Bottom half for legend */
+        #legend {
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        /* Style the legend items */
+        .legend-item {
+            margin: 0 20px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-red {
+            background-color: red;
+        }
+
+        .legend-yellow {
+            background-color: yellow;
+        }
+
+        .legend-green {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- The container for the map -->
+    <div id="map"></div>
+
+    <!-- Legend Section -->
+    <div id="legend">
+        <div class="legend-item">
+            <div class="legend-color legend-red"></div>
+            <span>Red: Location and picture not submitted</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-yellow"></div>
+            <span>Yellow: Location is wrong but picture submitted</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-green"></div>
+            <span>Green: Everything is submitted and checks out</span>
+        </div>
+    </div>
+
+    <!-- Google Maps API with your API Key and best practices for loading -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBj4jxx1zcP9feFQtHdtLVppdmanPgTXO8&callback=initMap" async defer loading="lazy"></script>
+
+    <script>
+        // Initialize the map
+        function initMap() {
+            // Set initial map options (zoom, center, etc.)
+            const initialLocation = { lat: 3.139, lng: 101.6869 }; // Coordinates for Kuala Lumpur, Malaysia
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: initialLocation
+            });
+
+            // Array to hold marker data (for legend status tracking)
+            const markers = [];
+
+            // Add a click event listener to the map
+            map.addListener('click', (event) => {
+                // Randomly assign marker status for demonstration (Red, Yellow, Green)
+                const statuses = ['red', 'yellow', 'green'];
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                addAdvancedMarker(event.latLng, map, randomStatus, markers);
+            });
+        }
+
+        // Function to add an advanced marker at the clicked location
+        function addAdvancedMarker(location, map, status, markers) {
+            const markerElement = document.createElement('div');
+            markerElement.className = 'custom-marker';
+
+            // Set marker appearance based on the status
+            if (status === 'red') {
+                markerElement.textContent = '🔴'; // Red marker
+            } else if (status === 'yellow') {
+                markerElement.textContent = '🟡'; // Yellow marker
+            } else {
+                markerElement.textContent = '🟢'; // Green marker
+            }
+
+            const advancedMarker = new google.maps.marker.AdvancedMarkerElement({
+                position: location,
+                map: map,
+                content: markerElement
+            });
+
+            // Add to the marker list (for legend tracking)
+            markers.push({ position: location, status });
+
+            // Optional: Add an info window to show coordinates on marker click
+            const infoWindow = new google.maps.InfoWindow({
+                content: `Latitude: ${location.lat()}, Longitude: ${location.lng()}`
+            });
+
+            advancedMarker.addListener('gmp-click', () => {
+                infoWindow.open({
+                    map,
+                    anchor: advancedMarker
+                });
+            });
+
+            // Update the legend based on marker data
+            updateLegend(markers);
+        }
+
+        // Function to update the legend (show how many red, yellow, green markers)
+        function updateLegend(markers) {
+            const redCount = markers.filter(marker => marker.status === 'red').length;
+            const yellowCount = markers.filter(marker => marker.status === 'yellow').length;
+            const greenCount = markers.filter(marker => marker.status === 'green').length;
+
+            // Display the count in the legend
+            document.querySelector('.legend-red').textContent = `Red: ${redCount} locations`;
+            document.querySelector('.legend-yellow').textContent = `Yellow: ${yellowCount} locations`;
+            document.querySelector('.legend-green').textContent = `Green: ${greenCount} locations`;
+        }
+
+        window.initMap = initMap; // Assign the initMap function to the global window object
+    </script>
+</body>
+
+</html>
