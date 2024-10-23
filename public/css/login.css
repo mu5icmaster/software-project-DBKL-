@@ -1,0 +1,76 @@
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 60%;
+    max-width: 800px;
+}
+
+.login-logo {
+    width: 100px;
+    height: auto;
+    margin-left: -10px;
+}
+
+.login-info {
+    flex: 1;
+    align-self: flex-start;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.login-form {
+    flex: 1;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+.login-submit-button {
+    font-family: "Lexend";
+    border-radius: 16px;
+    width: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-left: 10px;
+}
+
+.login-create-account-button {
+    font-family: "Lexend";
+    border-radius: 16px;
+    width: auto;
+    color: #007BFF;
+    background-color: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.login-create-account-button:hover {
+    color: #0056b3;
+    background-color: #E2E2EF;
+}
+
+.login-password-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.login-forgot-password {
+    font-family: "Lexend";
+    font-size: x-small;
+    color: #007BFF;
+    align-self: center;
+}
+
+.login-forgot-password:hover {
+    color: #0056b3;
+}

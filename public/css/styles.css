@@ -1,0 +1,42 @@
+body {
+    font-family: "Lexend", "Montserrat";
+    background-color: #f7f7ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h2 {
+    margin-bottom: -10px;
+}
+
+label {
+    display: block;
+    font-family: "Roboto Slab";
+    margin-bottom: 5px;
+}
+
+input {
+    width: calc(100% - 16px);
+    padding: 8px;
+    margin: 0;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
