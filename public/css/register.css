@@ -52,3 +52,36 @@
 .form-step:first-child {
     display: block;
 }
+
+@media (max-width: 600px) {
+    .register-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .register-info {
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 5%;
+        align-self: center;
+    }
+
+    .register-logo {
+        margin-left: -10;
+        align-self: center;
+    }
+
+
+    .register-form {
+        width: 100%;
+    }
+
+    .register-next-button-container {
+        justify-content: center;
+    }
+
+    .register-next-button {
+        margin-left: 0px;
+    }
+}
