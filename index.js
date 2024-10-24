@@ -2,14 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 const path = require('path');
 const os = require('os');
+const routes = require('./routes');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing the image in memory
 
 
-// Initialize MySQL database
+// Connect to the MySQL database
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -43,6 +45,9 @@ function getLocalIpAddress() {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files (HTML, CSS)
+
+// Use routes defined in routes.js
+app.use(routes);
 
 /*
 // POST route for handling form submission
