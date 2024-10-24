@@ -1,14 +1,14 @@
 const express = require('express');
+const https = require('https');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const mysql = require('mysql2');
-const path = require('path');
-const os = require('os');
 const routes = require('./routes');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const mysql = require('mysql2');
+
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() }); // Storing the image in memory
-
 
 // Connect to the MySQL database
 const db = mysql.createConnection({
@@ -27,6 +27,14 @@ db.connect((err) => {
     console.log('Connected to the database');
 });
 
+// Middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '50mb' })); // For image uploads
+app.use(express.static('public')); // Serve static files (HTML, CSS)
+
+// Use routes defined in routes.js
+app.use(routes);
+
 // Function to get the local IP address
 function getLocalIpAddress() {
     const interfaces = os.networkInterfaces();
@@ -40,42 +48,24 @@ function getLocalIpAddress() {
     return 'localhost';
 }
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files (HTML, CSS)
+// Start the server
+const options = {
+    key: fs.readFileSync('certs/server-key.pem'),
+    cert: fs.readFileSync('certs/server-cert.pem'),
+    ca: fs.readFileSync('certs/ca.pem')
+};
 
-// Use routes defined in routes.js
-app.use(routes);
+const PORT = process.env.PORT || 3000;
+https.createServer(options, app).listen(PORT, () => {
+    const ip_address = getLocalIpAddress();
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Access the server at https://${ip_address}:${PORT}/login.html`);
+});
 
 /*
-// POST route for handling form submission
-app.post('/submit', upload.single('photo'), (req, res) => {
-    const { email, latitude, longitude } = req.body;
-    const photo = req.body.photo; // This is the base64 encoded photo from the frontend
-
-    if (!email || !photo || !latitude || !longitude) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    // Insert data into the database
-    db.run(
-        'INSERT INTO users (email, photo, latitude, longitude) VALUES (?, ?, ?, ?)',
-        [email, photo, latitude, longitude],
-        function (err) {
-            if (err) {
-                return res.status(500).json({ message: 'Failed to submit data' });
-            }
-            res.json({ message: 'Data submitted successfully' });
-        }
-    );
-});
-*/
-
-// Start the server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     const ip_address = getLocalIpAddress();
     console.log(`Server running on port ${PORT}`);
     console.log(`Access the server at http://${ip_address}:${PORT}/login.html`);
 });
+*/
