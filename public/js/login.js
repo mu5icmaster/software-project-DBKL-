@@ -27,6 +27,7 @@ async function login() {
         alert('All fields are required');
         return;
     }
+
     try {
         const response = await fetch('/login', {
             method: 'POST',
@@ -39,7 +40,8 @@ async function login() {
         const result = await response.json();
 
         if (result.success) {
-            alert('Login successful');
+            localStorage.setItem('userID', result.userID);
+            window.location.href = 'user.html';
         } else {
             alert(result.message);
         }

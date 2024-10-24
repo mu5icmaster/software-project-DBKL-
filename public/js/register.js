@@ -53,7 +53,7 @@ async function register(event) {
         if (data.success) {
             // Handle success (e.g., redirect to another page)
             alert('Registration successful!');
-            window.location.href = '/dashboard'; // Redirect to the dashboard or another page
+            window.location.href = 'login.html'; // Redirect to the dashboard or another page
         } else {
             // Handle failure (e.g., show error message)
             alert(`Registration failed: ${data.message}`);
