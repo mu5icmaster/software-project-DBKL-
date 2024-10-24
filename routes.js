@@ -3,6 +3,8 @@ const router = express.Router();
 const common = require('./common');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+
 
 // Initialize MySQL database connection
 const db = mysql.createConnection({
@@ -33,8 +35,8 @@ router.post('/login', async (req, res) => {
         const match = await bcrypt.compare(sanitizedPassword, user.password_hash);
 
         if (match) {
-            console.log('Password match');
-            res.json({ success: true });
+            const userID = user.user_id;
+            res.json({ success: true , userID: userID });
         } else {
             res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
@@ -63,5 +65,36 @@ router.post('/register', async (req, res) => {
         res.json({ success: true, message: 'Registration successful' });
     });
 });
+
+router.post('/upload', (req, res) => {
+    const { userID, latitude, longitude, image } = req.body;
+
+    
+    // Decode the base64 image data
+    const base64Data = image.replace(/^data:image\/png;base64,/, '');
+    const { imageName, imagePath } = common.generateUniqueFileName();
+
+    
+    // Save the image to the server
+    fs.writeFile(imagePath, base64Data, 'base64', (err) => {
+        if (err) {
+            console.error('Error saving image:', err);
+            return res.status(500).json({ success: false, error: 'Failed to save image' });
+        }
+
+        // Save the image path and location data to the MySQL database
+        const query = 'INSERT INTO images (user_id, latitude, longitude, image_path) VALUES (?, ?, ?, ?)';
+        db.query(query, [userID, latitude, longitude, `/uploads/${imageName}`], (err, result) => {
+            if (err) {
+                console.error('Error saving to database:', err);
+                return res.status(500).json({ success: false, error: 'Failed to save data to database' });
+            }
+
+            res.json({ success: true, message: 'Image and data saved successfully' });
+        });
+    });
+    
+});
+
 
 module.exports = router;
