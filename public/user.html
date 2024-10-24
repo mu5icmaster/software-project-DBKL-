@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login with Picture and Location</title>
+    <title>Tenant Identification System</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/user.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,8 +12,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap"
         rel="stylesheet">
-    <style>
-    </style>
 </head>
 
 <body>
@@ -31,9 +29,15 @@
                     <label>Your geolocation is required for identity verification</label>
                 </div>
                 <div class="video-step" id="step-3">
-                    <h2>Take a picture</h2>
+                    <h2>Take a selfie</h2>
                     <video id="video" autoplay></video>
                     <label>Position your face within the<br>circle and take a selfie</label>
+                </div>
+                <div class="video-step" id="step-4">
+                    <h2>Success</h2>
+                    <img src="images/success.gif" alt="Success" class="success">
+                    <h4>Thank you</h4>
+                    <label>That's all we need to start verifying your identity</label>
                 </div>
                 <div class="submit-button-container">
                     <button type="submit" id="submit-button" class="submit-button">Confirm your identity</button>
