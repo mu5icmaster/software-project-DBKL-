@@ -1,8 +1,25 @@
+// Add event listeners after the DOM content is loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    const forgotPasswordLink = document.querySelector('.login-forgot-password');
+    forgotPasswordLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        forgotPassword();
+    });
+
+    const loginButton = document.querySelector('.login-submit-button');
+    loginButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        login();
+    });
+
+    const createAccountButton = document.querySelector('.login-create-account-button');
+    createAccountButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        createAccount();
+    });
+});
+
 async function login() {
-    /*// Function to handle "Login" button click
-    alert("Login button clicked!");
-    */
-    // Add your logic here
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -10,40 +27,31 @@ async function login() {
         alert('All fields are required');
         return;
     }
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
 
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    });
+        const result = await response.json();
 
-    const result = await response.json();
-    if (result.success) {
-        alert('Login successful');
-    } else {
-        alert(result.message);
+        if (result.success) {
+            alert('Login successful');
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
     }
 }
 
-async function hashPassword(password) {
-    const response = await fetch('/hash-password', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ password })
-    });
-
-    const result = await response.json();
-    return result.hashedPassword;
-}
-
 function createAccount() {
-    // Function to handle "Create Account" button click
-    alert("Create Account button clicked!");
-    // Add your logic here
+    window.location.href = "register.html";
+    console.log("Create Account button clicked!");
 }
 
 function forgotPassword() {
@@ -52,11 +60,3 @@ function forgotPassword() {
     // Add your logic here
 }
 
-// Add event listener for the "Forgot Password?" link
-document.addEventListener('DOMContentLoaded', (event) => {
-    const forgotPasswordLink = document.querySelector('.login-forgot-password');
-    forgotPasswordLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        forgotPassword();
-    });
-});
