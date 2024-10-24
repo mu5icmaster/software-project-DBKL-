@@ -41,4 +41,27 @@ router.post('/login', async (req, res) => {
     });
 });
 
+// Route to handle registration
+router.post('/register', async (req, res) => {
+    const { first_name, last_name, ic_number, email, password } = req.body;
+
+    // Validate the form data
+    if (!first_name || !last_name || !ic_number || !email || !password) {
+        return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Hash the password and concatenate the first and last name
+    const hashedPassword = await common.hashPassword(password);
+    const fullName = `${first_name} ${last_name}`;
+
+    // Insert the user into the database
+    const query = 'INSERT INTO users (user_name, user_ic, user_email, password_hash) VALUES (?, ?, ?, ?)';
+    db.query(query, [fullName, ic_number, email, hashedPassword], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database query failed:', err });
+        }
+        res.json({ success: true, message: 'Registration successful' });
+    });
+});
+
 module.exports = router;

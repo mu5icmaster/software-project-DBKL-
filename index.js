@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const mysql = require('mysql2');
-const bcrypt = require('bcrypt');
 const path = require('path');
 const os = require('os');
 const routes = require('./routes');

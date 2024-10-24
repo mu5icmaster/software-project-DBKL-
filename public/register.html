@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-info">
+            <img src="images/logo.png" alt="Logo" class="register-logo">
+            <h2>Register a DBKL Account</h2>
+            <p>Enter your details</p>
+        </div>
+        <div class="register-form">
+            <form id="register-form" action="/register" method="POST">
+                <div class="form-step" id="step-1">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-step" id="step-2" style="display: none;">
+                    <label for="ic_number">IC Number</label>
+                    <input type="text" id="ic_number" name="ic_number" required>
+                </div>
+                <div class="form-step" id="step-3" style="display: none;">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-step" id="step-4" style="display: none;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <!-- Minor Rant Incoming
+                    I thought about adding a toggle visibility icon for the password input field
+                    But the only method that works across all browsers 
+                    Involves changing the input type from password to text and back
+                    Which messes up password managers and autofill unsuprisingly
+                    Wtf browsers
+
+                    Anyways I'm not doing that, feel free to add it yourself
+                    -->
+                </div>
+                <div class="register-next-button-container">
+                    <button type="submit" id="register-next-button" class="register-next-button">Next</button>
+                </div>
+            </form>
+        </div>
+        <script src="js/register.js"></script>
+</body>
+
+</html>

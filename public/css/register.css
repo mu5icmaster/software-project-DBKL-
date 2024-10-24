@@ -1,0 +1,54 @@
+.register-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 60%;
+    max-width: 800px;
+}
+
+.register-logo {
+    width: 100px;
+    height: auto;
+    margin-left: -10px;
+}
+
+.register-info {
+    flex: 1;
+    align-self: flex-start;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.register-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-next-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.register-next-button {
+    font-family: "Lexend";
+    border-radius: 16px;
+    width: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-left: 10px;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step:first-child {
+    display: block;
+}
