@@ -1,0 +1,96 @@
+.user-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    max-width: 800px;
+}
+
+.video-step {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.video-step:first-child {
+    display: flex;
+}
+
+.location {
+    width: 40%;
+    max-width: 400px;
+    height: auto;
+    margin: 20px auto;
+    object-fit: contain;
+    border-radius: 24px;
+    background-image: url(./../images/location.jpg), radial-gradient(circle, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 70%);
+}
+
+video {
+    max-width: 250px;
+    height: 250px;
+    margin: 20px auto;
+    background-color: #e9e9f0;
+    object-fit: contain;
+    border: 0px solid #ccc;
+    border-radius: 50%;
+}
+
+.submit-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.submit-button {
+    font-family: "Lexend";
+    border-radius: 16px;
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.submit-button.round {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.submit-button img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1);
+}
+
+h2 {
+    margin-bottom: -12px;
+}
+
+h3 {
+    margin-bottom: 15px;
+}
+
+label {
+    font-family: "Lexend";
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    /* I'm so touched that font weights work */
+}
+
+.logo {
+    margin-bottom: 10px;
+}

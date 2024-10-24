@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login with Picture and Location</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/user.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap"
+        rel="stylesheet">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div class="user-container">
+            <div class="login-photo-location">
+                <div class="video-step" id="step-1">
+                    <h2>Welcome to DBKL</h2>
+                    <h3>Tenant Identification System</h3>
+                    <img src="images/logo.png" alt="Logo" class="logo">
+                    <label>Please verify your identity by clicking this button</label>
+                </div>
+                <div class="video-step" id="step-2">
+                    <h2>Share your location</h2>
+                    <img src="images/location.jpg" alt="Location" class="location">
+                    <label>Your geolocation is required for identity verification</label>
+                </div>
+                <div class="video-step" id="step-3">
+                    <h2>Take a picture</h2>
+                    <video id="video" autoplay></video>
+                    <label>Position your face within the<br>circle and take a selfie</label>
+                </div>
+                <div class="submit-button-container">
+                    <button type="submit" id="submit-button" class="submit-button">Confirm your identity</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/user.js"></script>
+</body>
+
+</html>
