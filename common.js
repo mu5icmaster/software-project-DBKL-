@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const uuidv4 = require('uuid').v4;
 
 /* See bottom of https://pypi.org/project/bcrypt/ for explanation */
 async function hashPassword(password) {
@@ -13,9 +16,22 @@ function sanitizePassword(password) {
     return sha256Hash;
 }
 
+function generateUniqueFileName() {
+    const imageName = `${uuidv4()}.png`;
+    const imagePath = path.join(__dirname, 'public/uploads', imageName);
+
+    while (fs.existsSync(imagePath)) {
+        imageName = `${uuidv4()}.png`;
+        imagePath = path.join(__dirname, 'public/uploads', imageName);
+    }
+
+    return { imageName, imagePath };
+};
+
 module.exports = {
     hashPassword,
-    sanitizePassword
+    sanitizePassword,
+    generateUniqueFileName
 };
 
 /*

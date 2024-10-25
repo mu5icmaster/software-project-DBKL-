@@ -18,9 +18,20 @@ CREATE TABLE IF NOT EXISTS users (
     user_email VARCHAR(100) NOT NULL UNIQUE,
     user_ic CHAR(12) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    image_path VARCHAR(255), /*This should be NOT NULL, just leaving it nullable now to make things easier*/
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 INSERT INTO users (role_id, user_name, user_email, user_ic, password_hash) VALUES (1, 'Admin', 'admin@gmail.com', '000000112222', 'ADMIN_PASSWORD_HASH');
+
+CREATE TABLE IF NOT EXISTS images (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(11, 8) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 

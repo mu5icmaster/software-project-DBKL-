@@ -1,0 +1,112 @@
+.navigation-bar {
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.navigation-bar.expanded {
+    width: auto;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 48px;
+    
+}
+
+.navigation-bar.collapsed {
+    width: 60px;
+    padding-left: 10px;
+    padding-right: 4px;
+}
+
+.navigation-bar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #848498;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.navigation-bar a img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.navigation-bar.expanded a .nav-text {
+    display: inline-block;
+    opacity: 1;
+    width: auto;
+    transition: opacity 0.3s, width 0.3s;
+}
+
+.navigation-bar.collapsed a .nav-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s, width 0.3s;
+}
+
+.navigation-toggle-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navigation-bar a .nav-logo img {
+    width: 40px;
+    height: 40px;
+}
+
+.navigation-bar.expanded a .nav-logo {
+    display: inline-block;
+    opacity: 1;
+    width: auto;
+    transition: opacity 0.3s, width 0.3s;
+    margin-left: -4px;
+    margin-right: 0px;
+}
+
+.navigation-bar.collapsed a .nav-logo {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s, width 0.3s;
+}
+
+.navigation-bar a .nav-hamburger-menu img {
+    width: 40px;
+    height: 40px;
+}
+
+.navigation-bar a .nav-hamburger-menu {
+    transition: transform 0.3s;
+    align-self: flex-end;
+    margin-right: -16px;
+}
+
+.navigation-bar.collapsed a .nav-hamburger-menu {
+    transform: translateX(-35px);
+}
+
+.navigation-bar a:hover {
+    color: #2b2a2a;
+}
+
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
