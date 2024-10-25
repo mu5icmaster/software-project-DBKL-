@@ -15,33 +15,49 @@ const db = mysql.createConnection({
 });
 
 // Route to handle login
+// Compare user's initial location with submitted location
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, latitude, longitude } = req.body;
 
-    // Query the database for the user
     db.query('SELECT * FROM users WHERE user_email = ?', [email], async (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Database query failed' });
         }
-
+        
         if (results.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
         const user = results[0];
-
-        // Compare the hashed password with the stored hashed password
-        const sanitizedPassword = common.sanitizePassword(password);
-        const match = await bcrypt.compare(sanitizedPassword, user.password_hash);
+        const match = await bcrypt.compare(password, user.password_hash);
 
         if (match) {
-            const userID = user.user_id;
-            res.json({ success: true , userID: userID });
+            const initialLatitude = user.latitude;
+            const initialLongitude = user.longitude;
+
+            const isLocationCorrect = compareLocations(initialLatitude, initialLongitude, latitude, longitude);
+            
+            let locationStatus = 'red';  // default
+
+            if (isLocationCorrect) {
+                locationStatus = 'green';
+            } else if (latitude && longitude) {
+                locationStatus = 'yellow';
+            }
+
+            res.json({ success: true, userID: user.user_id, locationStatus: locationStatus });
         } else {
             res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
     });
 });
+
+// Helper function to compare the locations
+function compareLocations(initialLat, initialLng, currentLat, currentLng) {
+    const threshold = 0.001; // Define a threshold for "correct"
+    return Math.abs(initialLat - currentLat) <= threshold && Math.abs(initialLng - currentLng) <= threshold;
+}
+
 
 // Route to handle registration
 router.post('/register', async (req, res) => {
@@ -57,13 +73,13 @@ router.post('/register', async (req, res) => {
     const fullName = `${first_name} ${last_name}`;
 
     // Insert the user into the database
-    const query = 'INSERT INTO users (user_name, user_ic, user_email, password_hash) VALUES (?, ?, ?, ?)';
-    db.query(query, [fullName, ic_number, email, hashedPassword], (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Database query failed:', err });
-        }
-        res.json({ success: true, message: 'Registration successful' });
-    });
+    // Store the user's initial location during registration
+    const query = 'INSERT INTO users (user_name, user_ic, user_email, password_hash, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(query, [fullName, ic_number, email, hashedPassword, initialLatitude, initialLongitude], (err, results) => {
+    if (err) {
+        return res.status(500).json({ success: false, message: 'Database query failed:', err });
+    }
+    res.json({ success: true, message: 'Registration successful' });
 });
 
 router.post('/upload', (req, res) => {
@@ -97,4 +113,4 @@ router.post('/upload', (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = router;})
