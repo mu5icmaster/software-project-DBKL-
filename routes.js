@@ -5,7 +5,6 @@ const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-
 // Initialize MySQL database connection
 const db = mysql.createConnection({
     host: 'localhost',
@@ -36,7 +35,7 @@ router.post('/login', async (req, res) => {
 
         if (match) {
             const userID = user.user_id;
-            res.json({ success: true , userID: userID });
+            res.json({ success: true, userID: userID });
         } else {
             res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
@@ -66,15 +65,14 @@ router.post('/register', async (req, res) => {
     });
 });
 
+// Route to handle image upload
 router.post('/upload', (req, res) => {
     const { userID, latitude, longitude, image } = req.body;
 
-    
     // Decode the base64 image data
     const base64Data = image.replace(/^data:image\/png;base64,/, '');
     const { imageName, imagePath } = common.generateUniqueFileName();
 
-    
     // Save the image to the server
     fs.writeFile(imagePath, base64Data, 'base64', (err) => {
         if (err) {
@@ -93,7 +91,24 @@ router.post('/upload', (req, res) => {
             res.json({ success: true, message: 'Image and data saved successfully' });
         });
     });
-    
+});
+
+// New Route to fetch user's latest latitude and longitude
+// Route to fetch all users' latest locations
+router.get('/user-locations', (req, res) => {
+    const query = 'SELECT latitude, longitude, image_path FROM images'; // Ensure 'image_path' is correct
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database query failed' });
+        }
+
+        if (results.length > 0) {
+            res.json({ success: true, locations: results });
+        } else {
+            res.status(404).json({ success: false, message: 'No locations found' });
+        }
+    });
 });
 
 
