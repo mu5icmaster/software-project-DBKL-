@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+
+<body>
+    <div class="title-container">
+        <h2>User</h2>
+    </div>
+
+    <div class="table-container">
+        <table id="user-table" class="display">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>IC</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Row 1 Data 1</td>
+                    <td>Row 1 Data 2</td>
+                    <td>Row 1 Data 3</td>
+                    <td>Row 1 Data 4</td>
+                    <td><button class="modify-address-button"><img src="images/edit.svg"></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modify-address-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title-container">
+                <h2>Modify Address</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="modifyAddressForm">
+                <input type="hidden" id="userID" name="userId">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address">
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</body>

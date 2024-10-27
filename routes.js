@@ -66,6 +66,7 @@ router.post('/register', async (req, res) => {
     });
 });
 
+// Route to handle image uploads
 router.post('/upload', (req, res) => {
     const { userID, latitude, longitude, image } = req.body;
 
@@ -93,7 +94,16 @@ router.post('/upload', (req, res) => {
             res.json({ success: true, message: 'Image and data saved successfully' });
         });
     });
-    
+});
+
+router.get('/users', (req, res) => {
+    /* Do not expose this endpoint in production */
+    db.query('SELECT user_name, user_email, user_ic, user_id FROM users WHERE role_id=2', (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database query failed' });
+        }
+        res.json({ success: true, users: results });
+    });
 });
 
 
