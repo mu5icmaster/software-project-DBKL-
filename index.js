@@ -6,7 +6,6 @@ const os = require('os');
 const fs = require('fs');
 const mysql = require('mysql2');
 
-
 const app = express();
 
 // Connect to the MySQL database
@@ -30,7 +29,12 @@ db.connect((err) => {
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '50mb' })); // For image uploads
-app.use(express.static('public')); // Serve static files (HTML, CSS)
+
+// Serve static files (HTML, CSS, JS)
+app.use(express.static('public'));
+
+// Ensure the /uploads directory is publicly accessible
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 // Use routes defined in routes.js
 app.use(routes);
@@ -48,13 +52,14 @@ function getLocalIpAddress() {
     return 'localhost';
 }
 
-// Start the server
+// HTTPS options
 const options = {
     key: fs.readFileSync('certs/server-key.pem'),
     cert: fs.readFileSync('certs/server-cert.pem'),
     ca: fs.readFileSync('certs/ca.pem')
 };
 
+// Start the HTTPS server
 const PORT = process.env.PORT || 3000;
 https.createServer(options, app).listen(PORT, () => {
     const ip_address = getLocalIpAddress();
