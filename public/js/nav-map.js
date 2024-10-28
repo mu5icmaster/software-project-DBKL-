@@ -1,3 +1,5 @@
+console.log("nav-map.js loaded");
+
 // Initialize the map
 function initMap() {
   const initialLocation = { lat: 3.139, lng: 101.6869 };
