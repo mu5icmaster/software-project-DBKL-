@@ -84,6 +84,33 @@ router.get('/api/admin', common.isAuthenticated, common.isAdmin, (req, res) => {
     });
 });
 
+router.get('/api/employees', common.isAuthenticated, common.isAdmin, (req, res) => {
+    const query = `
+        SELECT
+            u.user_id,
+            u.user_name AS name,
+            u.user_email AS email,
+            r.role_name AS role,
+            DATE_FORMAT(u.last_login, '%Y-%m-%d %H:%i:%s') AS last_activity 
+        FROM
+            users u
+        LEFT JOIN
+            roles r
+        ON
+            u.role_id = r.role_id
+        WHERE
+            u.role_id != 2
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database query failed' });
+        }
+        res.json({ success: true, employees: results });
+    });
+});
+            
+
 router.get('/api/locations', common.isAuthenticated, common.isAdmin, (req, res) => {
     const query = 'SELECT latitude, longitude, image_path FROM images';
 
@@ -166,6 +193,8 @@ router.post('/login', async (req, res) => {
         const match = await bcrypt.compare(sanitizedPassword, user.password_hash);
 
         if (match) {
+            db.query('UPDATE users SET last_login = NOW() WHERE user_id = ?', [user.user_id]);
+
             const userID = user.user_id;
             const userRole = user.role_id === 1 ? 'admin' : 'user';
             req.session.userID = userID;

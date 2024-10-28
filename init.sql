@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     image_path VARCHAR(255), /*This should be NOT NULL, just leaving it nullable now to make things easier*/
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_login TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES roles(role_id),
     FOREIGN KEY (address_id) REFERENCES address(address_id)
 );
