@@ -13,6 +13,8 @@ INSERT INTO roles (role_name) VALUES ('admin'), ('customer');
 
 CREATE TABLE IF NOT EXISTS `address` (
     address_id INT AUTO_INCREMENT PRIMARY KEY,
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(11, 8) NOT NULL,
     address_line VARCHAR(200) NOT NULL,
     city VARCHAR(50) NOT NULL,
     `state` VARCHAR(50) NOT NULL,

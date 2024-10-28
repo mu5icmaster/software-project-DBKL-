@@ -46,13 +46,31 @@ function isAdmin(req, res, next) {
     }
 }
 
+async function getCoordinates(address) {
+    const sanitizedAddress = address.replace(/ /g, '%20').replace(/,/g, '');
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${sanitizedAddress}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+
+    if (data.status === 'OK') {
+        const location = data.results[0].geometry.location;
+        return { latitude: location.lat, longitude: location.lng };
+    } else {
+        return { latitude: 0, longitude: 0 };
+    }
+} 
+
 module.exports = {
     hashPassword,
     sanitizePassword,
     generateUniqueFileName,
     isAuthenticated,
-    isAdmin
+    isAdmin,
+    getCoordinates
 };
+
 /*
 DEBUGGING PURPOSES:
 sha256 Hash: b'5gT7IHLChtH7Y3jFzedMoMmfO6HZ9M71iWkCDvvCOC4='

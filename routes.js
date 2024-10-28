@@ -257,8 +257,10 @@ router.post('/upload', (req, res) => {
     });
 });
 
-router.post('/update-address', multer().none(), (req, res) => {
+router.post('/update-address', multer().none(), async (req, res) => {
     const { userID, address, city, state, zipcode } = req.body;
+    const { latitude, longitude } = await common.getCoordinates(`${address} ${zipcode} ${city} ${state}`);
+
     db.query('SELECT COALESCE(address_id, "") as address_id FROM users WHERE user_id = ?', [userID], (err, results) => {
         if (err) {
             console.error('Error fetching address ID:', err);
@@ -268,8 +270,8 @@ router.post('/update-address', multer().none(), (req, res) => {
 
 
         if (!addressID) {
-            const query = 'INSERT INTO `address` (address_line, city, state, zip_code) VALUES (?, ?, ?, ?)';
-            db.query(query, [address, city, state, zipcode], (err, results) => {
+            const query = 'INSERT INTO `address` (address_line, city, state, zip_code, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)';
+            db.query(query, [address, city, state, zipcode, latitude, longitude], (err, results) => {
                 if (err) {
                     console.error('Error inserting address:', err);
                     return res.status(500).json({ success: false, message: 'Database query failed', err });
@@ -295,11 +297,13 @@ router.post('/update-address', multer().none(), (req, res) => {
                     a.address_line = ?, 
                     a.city = ?, 
                     a.state = ?, 
-                    a.zip_code = ? 
+                    a.zip_code = ?,
+                    a.latitude = ?,
+                    a.longitude = ?
                 WHERE 
                     u.user_id = ?
     `;
-            db.query(query, [address, city, state, zipcode, userID], (err, results) => {
+            db.query(query, [address, city, state, zipcode, , latitude, longitude, userID], (err, results) => {
                 if (err) {
                     console.error('Error updating address:', err);
                     return res.status(500).json({ success: false, message: 'Database query failed', err });
