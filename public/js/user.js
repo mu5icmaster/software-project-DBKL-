@@ -1,14 +1,6 @@
 let currentStep = 1;
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    const userID = localStorage.getItem('userID');
-    // console.log('UserID on DOMContentLoaded:', userID);
-    if (!userID) {
-        alert('You must be logged in to access this page.');
-        window.location.href = 'login.html';
-        return;
-    }
-    // console.log('User ID:', userID);
     const submitButton = document.getElementById('submit-button');
     submitButton.addEventListener('click', (event) => {
         event.preventDefault();
@@ -45,13 +37,16 @@ function nextStep() {
 }
 
 async function submit() {
-    const userID = localStorage.getItem('userID')
+    const sessionResponse = await fetch('/session-info');
+    const sessionData = await sessionResponse.json();
+    const userID = sessionData.userID;
+
     const image = captureCamera();
     const latitude = localStorage.getItem('latitude');
     const longitude = localStorage.getItem('longitude');
 
-    // console.log('UserID in submit function:', userID);
-    // console.log('Submitting:', userID, latitude, longitude, image);
+    console.log('UserID in submit function:', userID);
+    console.log('Submitting:', userID, latitude, longitude, image);
 
     const response = await fetch('/upload', {
         method: 'POST',

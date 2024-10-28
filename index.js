@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors');
+const session = require('express-session');
 const https = require('https');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
@@ -32,14 +32,19 @@ db.connect((err) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '50mb' })); // For image uploads
 
-// Serve static files (HTML, CSS, JS)
-app.use(express.static('public'));
-
-// Ensure the /uploads directory is publicly accessible
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// Session configuration
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true }
+}));
 
 // Use routes defined in routes.js
 app.use(routes);
+
+// Serve static files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Function to get the local IP address
 function getLocalIpAddress() {

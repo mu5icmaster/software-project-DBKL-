@@ -29,7 +29,7 @@ function initMap() {
 }
 
 // Function to add a marker with a specific status and display an image
-function addAdvancedMarker(location, map, status, imagePath) {
+async function addAdvancedMarker(location, map, status, imagePath) {
   let markerIcon;
 
   // Set marker icon based on status
@@ -41,7 +41,7 @@ function addAdvancedMarker(location, map, status, imagePath) {
       markerIcon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
   }
 
-  console.log("Adding marker at location:", location); // Debugging log
+  // console.log("Adding marker at location:", location); // Debugging log
 
   // Add marker to the map
   const marker = new google.maps.Marker({
@@ -50,12 +50,30 @@ function addAdvancedMarker(location, map, status, imagePath) {
       icon: markerIcon
   });
 
+  let imageUrl = '';
+
+  if (imagePath) {
+      try {
+          console.log("Fetching image:", imagePath);
+          console.log("Full path:", `${imagePath}`);
+          const response = await fetch(`${imagePath}`);
+          console.log("Response:", response);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const blob = await response.blob();
+          imageUrl = URL.createObjectURL(blob);
+        } catch (error) {
+          console.error('Error fetching image:', error);
+      }
+  }
+
   // Prepare content for info window (including the image)
   const infoWindowContent = `
     <div>
       <p><strong>Latitude:</strong> ${location.lat}</p>
       <p><strong>Longitude:</strong> ${location.lng}</p>
-      ${imagePath ? `<img src="${imagePath}" alt="Uploaded Image" style="width:100px;height:auto;">` : '<p>No image available</p>'}
+      ${imageUrl ? `<img src="${imageUrl}" alt="Uploaded Image" style="width:100px;height:auto;">` : '<p>No image available</p>'}
     </div>
   `;
 

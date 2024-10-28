@@ -40,13 +40,13 @@ async function login() {
         const result = await response.json();
 
         if (result.success) {
-            localStorage.setItem('userID', result.userID); 
-            /*  After sleeping on this, I realized that this is incredibly insecure.
-                You can literally just change the userID in the localStorage to anything you want.
-                But I'm not paid to think about security, so I'm just going to leave it as is.
-                Please don't use this in production. T_T
-            */
-            window.location.href = 'user.html';
+            console.log('Login successful:', result);
+            if (result.userRole === 'admin') {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'user.html';
+            }
+            
         } else {
             alert(result.message);
         }
