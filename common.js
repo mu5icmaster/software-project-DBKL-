@@ -18,20 +18,57 @@ function sanitizePassword(password) {
 
 function generateUniqueFileName() {
     const imageName = `${uuidv4()}.png`;
-    const imagePath = path.join(__dirname, 'public/uploads', imageName);
+    const imagePath = path.join(__dirname, 'uploads', imageName);
 
     while (fs.existsSync(imagePath)) {
         imageName = `${uuidv4()}.png`;
-        imagePath = path.join(__dirname, 'public/uploads', imageName);
+        imagePath = path.join(__dirname, 'uploads', imageName);
     }
 
     return { imageName, imagePath };
 };
 
+// Middleware to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+    if (req.session.userID) {
+        next();
+    } else {
+        res.redirect('/login.html');
+    }
+}
+
+// Middleware to check if the user is an administrator
+function isAdmin(req, res, next) {
+    if (req.session.userRole === 'admin') {
+        next();
+    } else {
+        res.status(403).send('Access denied');
+    }
+}
+
+async function getCoordinates(address) {
+    const sanitizedAddress = address.replace(/ /g, '%20').replace(/,/g, '');
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${sanitizedAddress}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+
+    if (data.status === 'OK') {
+        const location = data.results[0].geometry.location;
+        return { latitude: location.lat, longitude: location.lng };
+    } else {
+        return { latitude: 0, longitude: 0 };
+    }
+} 
+
 module.exports = {
     hashPassword,
     sanitizePassword,
-    generateUniqueFileName
+    generateUniqueFileName,
+    isAuthenticated,
+    isAdmin,
+    getCoordinates
 };
 
 /*

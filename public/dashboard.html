@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Dashboard Page</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -15,18 +15,25 @@
 </head>
 
 <body>
-    <div id="navigation-bar" class="navigation-bar expanded">
-        <a href="#" class="navigation-toggle-button"><span class="nav-logo"><img src="images/logo_no_text.png" alt="Logo"></span><span class="nav-hamburger-menu"><img src="images/hamburger.svg" alt="Hamburger Menu Icon"></span></a>
-        <a href="#"><img src="images/map.svg" alt="Map Icon"><span class="nav-text">Map</span></a>
-        <a href="#"><img src="images/user.svg" alt="User Icon"><span class="nav-text">User</span></a>
-        <a href="#"><img src="images/employee.svg" alt="Employee Icon"><span class="nav-text">Employee</span></a>
-        <a href="#"><img src="images/admin.svg" alt="Admin Icon"><span class="nav-text">Admin</span></a>
-    </div>
-    <div id="main">
-        <h2>Dashboard</h2>
-        <p>Welcome to the dashboard!</p>
+    <div class="layout-container">
+        <div id="navigation-bar" class="navigation-bar expanded">
+            <a href="#" class="navigation-toggle-button"><span class="nav-logo"><img src="images/logo_no_text.png"
+                        alt="Logo"></span><span class="nav-hamburger-menu"><img src="images/hamburger.svg"
+                        alt="Hamburger Menu Icon"></span></a>
+            <a href="#" id="navigation-map"><img src="images/map.svg" alt="Map Icon"><span class="nav-text">Map</span></a>
+            <a href="#" id="navigation-user"><img src="images/user.svg" alt="User Icon"><span
+                    class="nav-text">User</span></a>
+            <a href="#" id="navigation-employee"><img src="images/employee.svg" alt="Employee Icon"><span class="nav-text">Employee</span></a>
+            <a href="#" id="navigation-admin"><img src="images/admin.svg" alt="Admin Icon"><span class="nav-text">Admin</span></a>
+        </div>
+        <div class="main-container">
+            
+        </div>
     </div>
     <script src="js/dashboard.js"></script>
+    <script src="js/nav-map.js"></script>
+
+    <!-- <script src="//cdn.datatables.net/plug-ins/2.1.8/features/pageResize/dataTables.pageResize.min.js"></script> -->
 </body>
 
 </html>

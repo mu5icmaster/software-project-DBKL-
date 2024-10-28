@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const form = document.getElementById('register-form');
     form.addEventListener('submit', (event) => {
         event.preventDefault();
-        register(event);
     });
 
     const nextRegisterButton = document.getElementById('register-next-button');
@@ -26,20 +25,19 @@ function nextStep() {
 
         // If this is the last step, change the button text and function
         if (!document.getElementById(`step-${currentStep + 1}`)) {
-            nextButton.textContent = 'Register';
-            nextButton.onclick = () => {
-                document.getElementById('register-form').submit();
-            };
+            button.textContent = 'Register';
         }
 
     } else {
         // If there are no more steps, submit the form
-        document.getElementById('register-form').submit();
+        register();
     }
 }
 
-async function register(event) {
-    const formData = new FormData(event.target);
+async function register() {
+    const formData = new FormData(document.getElementById('register-form'));
+    console.log('Form data:', formData);
+    console.log('registering...');
 
     try {
         const response = await fetch('/register', {
@@ -48,7 +46,7 @@ async function register(event) {
         });
 
         const data = await response.json();
-        console.log('Success:', data);
+        // console.log('Success:', data);
 
         if (data.success) {
             // Handle success (e.g., redirect to another page)

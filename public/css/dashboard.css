@@ -1,6 +1,44 @@
+.layout-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    transition: 0.5s;
+}
+
+/* ==================================================================== */
+/* Styles from style.css, as the some styles interferes with dataTables */
+/* ==================================================================== */
+
+body {
+    font-family: "Lexend", "Montserrat";
+    background-color: #f7f7ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    body {
+        overflow-y: auto;
+    }
+}
+
+/* ============================================== */
+/* Styles for the navigation bar in the dashboard */
+/* ============================================== */
 .navigation-bar {
     height: 100%;
-    position: fixed;
     top: 0;
     left: 0;
     background-color: #ffffff;
@@ -13,7 +51,7 @@
 }
 
 .navigation-bar.expanded {
-    width: auto;
+    width: 200px;
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 48px;
@@ -100,13 +138,5 @@
 
 .navigation-bar a:hover {
     color: #2b2a2a;
-}
-
-.close-button {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
 }
 

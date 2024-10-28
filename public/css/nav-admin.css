@@ -1,0 +1,83 @@
+.title-container {
+    padding-left: 24px;
+    padding-bottom: 0px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+
+#admin-table_wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.dt-layout-table {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.verify-tenant-button {
+    border-radius: 8px;
+    height: 32px;
+    width: 32px;
+    padding-left: 6px;
+    padding-bottom: 4px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color: white;
+}
+
+.verify-tenant-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.chip {
+    display: inline-block;
+    padding: 0 10px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    border-radius: 12px;
+    color: black;
+    text-align: center;
+    align-self: center;
+    opacity: 0.75;
+
+}
+
+.chip.green {
+    background-color: #00cc66;
+    box-shadow: 0 0 10px #00cc66; 
+}
+
+.chip.red {
+    background-color: #ff4d4d;
+    box-shadow: 0 0 10px #00cc66;
+}
+
+.chip.orange {
+    background-color: #ffd700;
+    box-shadow: 0 0 10px #ffd700;
+}
+/*
+.selected {
+    --dt-row-selected: rgb(111, 111, 219);
+}
+*/
+
+th,
+td {
+    text-align: start;
+}

@@ -1,5 +1,5 @@
 # User uploaded files
-public/uploads/*
+uploads/*
 
 # IDE files
 .vscode
