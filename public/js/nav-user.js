@@ -59,7 +59,6 @@ function populateUserTable() {
             const table = $('#user-table').DataTable();
             table.clear();
             users.forEach(user => {
-                console.log(user);
                 table.row.add([
                     user.user_name,
                     user.user_email,

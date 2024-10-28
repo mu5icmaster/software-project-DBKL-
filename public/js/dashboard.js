@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     navToggleButton.addEventListener('click', toggleNav);
 
     // Add event listeners for navigation links
-    document.getElementById('navigation-map').addEventListener('click', () => loadContent('nav-map.html', 'css/nav-map.css', 'js/nav-map.js'));
-    document.getElementById('navigation-user').addEventListener('click', () => loadContent('nav-user.html', 'css/nav-user.css', 'js/nav-user.js'));
-    document.getElementById('navigation-employee').addEventListener('click', () => loadContent('nav-employee.html', 'css/nav-employee.css', 'js/nav-employee.js'));
-    document.getElementById('navigation-admin').addEventListener('click', () => loadContent('nav-admin.html', 'css/nav-admin.css', 'js/nav-admin.js'));
+    document.getElementById('navigation-map').addEventListener('click', () => loadContent('nav-map.html', 'css/nav-map.css', ["https://maps.googleapis.com/maps/api/js?key=AIzaSyBj4jxx1zcP9feFQtHdtLVppdmanPgTXO8&callback=initMap"]));
+    document.getElementById('navigation-user').addEventListener('click', () => loadContent('nav-user.html', 'css/nav-user.css', ['js/nav-user.js', "https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js"]));
+    document.getElementById('navigation-employee').addEventListener('click', () => loadContent('nav-employee.html', 'css/nav-employee.css', ['js/nav-employee.js']));
+    document.getElementById('navigation-admin').addEventListener('click', () => loadContent('nav-admin.html', 'css/nav-admin.css', ['js/nav-admin.js']));
 
     // Load default content
-    loadContent('nav-user.html', 'css/nav-user.css', 'js/nav-user.js');
+    loadContent('nav-user.html', 'css/nav-user.css', ['js/nav-user.js', "https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js"]);
 });
 
 function toggleNav() {
@@ -54,18 +54,32 @@ function loadCSS(css) {
     document.head.appendChild(link);
 }
 
-function loadJS(js) {
+function loadJS(jsFiles) {
     // Remove any previously loaded JavaScript
-    const existingScript = document.querySelector('script[data-dynamic]');
-    if (existingScript) {
-        existingScript.remove();
+    const existingScripts = document.querySelectorAll('script[data-dynamic]');
+    if (existingScripts) {
+        console.log(existingScripts);
+        existingScripts.forEach(script => {
+            script.remove();
+        });
     }
 
+    console.log(jsFiles);
+
     // Load new script
-    const script = document.createElement('script');
-    script.src = js;
-    // script.type = 'text/javascript';
-    script.setAttribute('data-dynamic', 'true');
-    document.body.appendChild(script);
+    jsFiles.forEach(js => {
+        const script = document.createElement('script');
+        script.src = js;
+        script.setAttribute('data-dynamic', 'true');
+
+        // Add async and defer attributes for Google Maps script
+        if (js.includes('maps.googleapis.com')) {
+            console.log('Adding async and defer attributes');
+            script.async = true;
+            script.defer = true;
+        }
+        
+        document.body.appendChild(script);
+    });
 }
 
