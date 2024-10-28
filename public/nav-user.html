@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+
+<body>
+    <div class="title-container">
+        <h2>User</h2>
+    </div>
+
+    <div class="table-container">
+        <table id="user-table" class="display">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>IC</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Row 1 Data 1</td>
+                    <td>Row 1 Data 2</td>
+                    <td>Row 1 Data 3</td>
+                    <td>Row 1 Data 4</td>
+                    <td><button class="modify-address-button"><img src="images/edit.svg"></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modify-address-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title-container">
+                <h2>Modify Address</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="modifyAddressForm">
+                <input type="hidden" id="userID" name="userID">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" disabled placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" id="email" name="email" disabled placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address Line:</label>
+                        <input type="text" id="address" name="address" placeholder="Address Line">
+                    </div>
+                    <div class="form-group">
+                        <label for="zipcode">Zipcode:</label>
+                        <input type="text" id="zipcode" name="zipcode" placeholder="Zipcode">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" id="city" name="city" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State:</label>
+                        <select id="state" name="state">
+                            <option value="" disabled selected>Select State</option>
+                            <option value="Johor">Johor</option>
+                            <option value="Kedah">Kedah</option>
+                            <option value="Kelantan">Kelantan</option>
+                            <option value="Kuala Lumpur">Kuala Lumpur</option>
+                            <option value="Labuan">Labuan</option>
+                            <option value="Melaka">Melaka</option>
+                            <option value="Negeri Sembilan">Negeri Sembilan</option>
+                            <option value="Pahang">Pahang</option>
+                            <option value="Perak">Perak</option>
+                            <option value="Perlis">Perlis</option>
+                            <option value="Pulau Pinang">Pulau Pinang</option>
+                            <option value="Putrajaya">Putrajaya</option>
+                            <option value="Sabah">Sabah</option>
+                            <option value="Sarawak">Sarawak</option>
+                            <option value="Selangor">Selangor</option>
+                            <option value="Terengganu">Terengganu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="submit-button-container">
+                    <button class="cancel-button" type="button">Cancel</button>
+                    <button class="submit-button" type="submit">Change Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const routes = require('./routes');
 const os = require('os');
 const fs = require('fs');
-const path = require('path');
 const mysql = require('mysql2');
 
 const app = express();
@@ -21,6 +20,7 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err) {
         console.error('Failed to connect to the database:', err.message);
+        console.error('Are you sure the database is running?');
         process.exit(1);
     }
     console.log('Connected to the database');
