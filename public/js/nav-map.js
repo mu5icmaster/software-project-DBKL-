@@ -16,8 +16,8 @@ function initMap() {
       console.log("Locations fetched from backend:", data.locations);
       data.locations.forEach(location => {
         const latLng = { lat: parseFloat(location.latitude), lng: parseFloat(location.longitude) };
-        console.log("Adding marker for image:", location.image_path);
-        addAdvancedMarker(latLng, map, 'red', location.image_path);
+        const color = location.color;
+        addAdvancedMarker(latLng, map, color, location.image_path);
       });
     } else {
       console.error('Failed to load locations:', data.message);
@@ -41,7 +41,7 @@ async function addAdvancedMarker(location, map, status, imagePath) {
       markerIcon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
   }
 
-  // console.log("Adding marker at location:", location); // Debugging log
+  console.log("Adding marker at location:", location); // Debugging log
 
   // Add marker to the map
   const marker = new google.maps.Marker({
@@ -54,10 +54,7 @@ async function addAdvancedMarker(location, map, status, imagePath) {
 
   if (imagePath) {
       try {
-          console.log("Fetching image:", imagePath);
-          console.log("Full path:", `${imagePath}`);
           const response = await fetch(`${imagePath}`);
-          console.log("Response:", response);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -66,7 +63,7 @@ async function addAdvancedMarker(location, map, status, imagePath) {
         } catch (error) {
           console.error('Error fetching image:', error);
       }
-  }
+  } 
 
   // Prepare content for info window (including the image)
   const infoWindowContent = `
