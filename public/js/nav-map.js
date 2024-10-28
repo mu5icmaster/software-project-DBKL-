@@ -9,7 +9,7 @@ function initMap() {
   });
 
   // Fetch user locations from the backend
-  fetch('/user-locations')
+  fetch('/api/locations')
   .then(response => response.json())
   .then(data => {
     if (data.success) {

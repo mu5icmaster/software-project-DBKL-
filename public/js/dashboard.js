@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Add event listeners for navigation links
     document.getElementById('navigation-map').addEventListener('click', () => loadContent('nav-map.html', 'css/nav-map.css', ["https://maps.googleapis.com/maps/api/js?key=AIzaSyBj4jxx1zcP9feFQtHdtLVppdmanPgTXO8&callback=initMap"]));
-    document.getElementById('navigation-user').addEventListener('click', () => loadContent('nav-user.html', 'css/nav-user.css', ['js/nav-user.js', "https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js"]));
+    document.getElementById('navigation-user').addEventListener('click', () => loadContent('nav-user.html', 'css/nav-user.css', ["https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js", 'js/nav-user.js']));
     document.getElementById('navigation-employee').addEventListener('click', () => loadContent('nav-employee.html', 'css/nav-employee.css', ['js/nav-employee.js']));
-    document.getElementById('navigation-admin').addEventListener('click', () => loadContent('nav-admin.html', 'css/nav-admin.css', ['js/nav-admin.js']));
+    document.getElementById('navigation-admin').addEventListener('click', () => loadContent('nav-admin.html', 'css/nav-admin.css', ["https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js", 'js/nav-admin.js']));
 
     // Load default content
     loadContent('nav-user.html', 'css/nav-user.css', ['js/nav-user.js', "https://code.jquery.com/jquery-3.7.1.min.js", "https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.1.2/sl-2.1.0/datatables.min.js"]);

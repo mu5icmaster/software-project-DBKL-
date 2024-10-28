@@ -31,7 +31,7 @@ router.get('/session-info', (req, res) => {
     }
 });
 
-router.get('/users', common.isAuthenticated, common.isAdmin, (req, res) => {
+router.get('/api/users', common.isAuthenticated, common.isAdmin, (req, res) => {
     const query = `
         SELECT
             u.user_name,
@@ -56,7 +56,35 @@ router.get('/users', common.isAuthenticated, common.isAdmin, (req, res) => {
     });
 });
 
-router.get('/user-locations', common.isAuthenticated, common.isAdmin, (req, res) => {
+router.get('/api/admin', common.isAuthenticated, common.isAdmin, (req, res) => {
+    const query = `
+        SELECT
+            u.user_id AS id,
+            u.user_name AS name,
+            COALESCE(CONCAT(a.address_line, ", ", a.zip_code, " ", a.city, ", ", a.\`state\`), "-") AS address,
+            "PLACEHOLDER" AS status,
+            COALESCE(DATE_FORMAT(i.created_at, '%Y-%m-%d %H:00:00'), "-") AS created_at
+        FROM users u
+        LEFT JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) AS created_at
+            FROM images 
+            GROUP BY user_id
+        ) i ON u.user_id = i.user_id
+        LEFT JOIN address a ON u.address_id = a.address_id
+        WHERE role_id = 2
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database query failed', err});
+        }
+        res.json({ success: true, users: results });
+    });
+});
+
+router.get('/api/locations', common.isAuthenticated, common.isAdmin, (req, res) => {
     const query = 'SELECT latitude, longitude, image_path FROM images';
 
     db.query(query, (err, results) => {
@@ -73,7 +101,7 @@ router.get('/user-locations', common.isAuthenticated, common.isAdmin, (req, res)
 });
 
 // Helper route to autofill form fields with user data
-router.get('/user/:id', (req, res) => {
+router.get('/user/:id', common.isAuthenticated, common.isAdmin, (req, res) => {
     const userID = req.params.id;
     const query = `
         SELECT 
@@ -101,7 +129,7 @@ router.get('/user/:id', (req, res) => {
     });
 });
 
-router.get('/uploads/:path', (req, res) => {
+router.get('/uploads/:path', common.isAuthenticated, common.isAdmin, (req, res) => {
     const imagePath = req.params.path;
 
     // Sanitize the path to prevent directory traversal attacks

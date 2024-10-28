@@ -48,7 +48,7 @@ function initialize() {
 }
 
 function populateUserTable() {
-    fetch('/users')
+    fetch('/api/users')
     .then(response => response.json())
         .then(data => {
             if (!data.success) {
