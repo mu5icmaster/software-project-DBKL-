@@ -112,14 +112,73 @@ router.get('/api/employees', common.isAuthenticated, common.isAdmin, (req, res) 
             
 
 router.get('/api/locations', common.isAuthenticated, common.isAdmin, (req, res) => {
-    const query = 'SELECT latitude, longitude, image_path FROM images';
+    const query = `
+        SELECT
+            im.latitude,
+            im.longitude,
+            im.image_path,
+            im.created_at,
+            a.latitude AS address_latitude,
+            a.longitude AS address_longitude
+        FROM
+            (
+                SELECT
+                    i1.latitude,
+                    i1.longitude,
+                    i1.image_path,
+                    i1.user_id,
+                    i1.created_at
+                FROM
+                    images i1
+                INNER JOIN
+                    (
+                        SELECT
+                            user_id,
+                            MAX(created_at) AS latest_created_at
+                        FROM
+                            images
+                        GROUP BY
+                            user_id
+                    ) i2
+                ON
+                    i1.user_id = i2.user_id
+                    AND i1.created_at = i2.latest_created_at
+            ) im
+        RIGHT JOIN
+            users u
+        ON
+            im.user_id = u.user_id
+        RIGHT JOIN
+            \`address\` a
+        ON
+            u.address_id = a.address_id
+    `; // JFC I hate this query
 
     db.query(query, (err, results) => {
         if (err) {
             return res.status(500).json({ success: false, message: 'Database query failed' });
         }
 
+        const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
+        const currentTime = new Date();
+        const oneWeekAgo = new Date(currentTime.getTime() - oneWeekInMillis);
         if (results.length > 0) {
+            results.forEach((result) => {
+                const createdAt = new Date(result.created_at);
+
+                if (createdAt >= oneWeekAgo && createdAt <= currentTime) {
+                    if (common.compareLocations(result.latitude, result.address_latitude, result.longitude, result.address_longitude)) {
+                        result.color = 'green';
+                    } else {
+                        result.color = 'yellow';
+                    }
+                } else {
+                    result.color = 'red';
+                    result.latitude = result.address_latitude;
+                    result.longitude = result.address_longitude;
+                }
+
+            });
             res.json({ success: true, locations: results });
         } else {
             res.status(404).json({ success: false, message: 'No locations found' });

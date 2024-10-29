@@ -62,13 +62,24 @@ async function getCoordinates(address) {
     }
 } 
 
+function compareLocations(latitude, address_latitude, longitude, address_longitude) {
+    const THRESHOLD = 0.01;
+
+    if (Math.abs(latitude - address_latitude) < THRESHOLD && Math.abs(longitude - address_longitude) < THRESHOLD) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     hashPassword,
     sanitizePassword,
     generateUniqueFileName,
     isAuthenticated,
     isAdmin,
-    getCoordinates
+    getCoordinates,
+    compareLocations
 };
 
 /*
