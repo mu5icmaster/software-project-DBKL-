@@ -288,6 +288,29 @@ router.post('/register', multer().none(), async (req, res) => {
     });
 });
 
+router.post('/api/employees', multer().none(), async (req, res) => {
+    const { name, email, ic, password } = req.body;
+
+    // Validate the form data
+    if (!name || !email || !ic || !password) {
+        return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Hash the password
+    const hashedPassword = await common.hashPassword(password);
+
+    // Insert the employee into the database
+    const query = 'INSERT INTO users (user_name, user_email, user_ic, password_hash, role_id) VALUES (?, ?, ?, ?, 1)';
+    db.query(query, [name, email, ic, hashedPassword], (err, results) => {
+        if (err) {
+            console.error('Error adding employee:', err);
+            return res.status(500).json({ success: false, message: 'Database query failed', err });
+        }
+        res.json({ success: true, message: 'Employee added successfully' });
+    });
+});
+
+
 // Route to handle image uploads
 router.post('/upload', (req, res) => {
     const { userID, latitude, longitude, image } = req.body;

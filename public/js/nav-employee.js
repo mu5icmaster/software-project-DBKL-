@@ -14,9 +14,36 @@ function initialize() {
         },
         paging: true,
         info: true,
-        // pageResize: true
     });
     populateEmployeeTable();
+
+    // Inject the "Add" button into the desired div
+    const addButton = $('<button id="add-employee-button" class="add-button">Add</button>');
+    addButton.on('click', function () {
+        showAddEmployeeModal();
+    });
+    $('.dt-layout-cell.dt-layout-end').prepend(addButton);
+
+    // Add event listener to close the modal
+    document.querySelector('.modal .close').addEventListener('click', function () {
+        closeAddEmployeeModal();
+    });
+
+    document.querySelector('.cancel-button').addEventListener('click', function () {
+        closeAddEmployeeModal();
+    });
+
+    window.onclick = function (event) {
+        const modal = document.getElementById('add-employee-modal');
+        if (event.target == modal) {
+            closeAddEmployeeModal();
+        }
+    };
+    
+    document.getElementById('add-employee-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        addEmployee();
+    });
 
     // Add event listener to handle modify address button clicks
     $('#employee-table tbody').on('click', 'button.delete-employee-button', function () {
@@ -47,4 +74,52 @@ function populateEmployeeTable() {
             table.draw();
         })
         .catch(error => console.error('Error fetching employees:', error));
+}
+
+function showAddEmployeeModal() {
+    const modal = document.getElementById('add-employee-modal');
+    const modalContent = document.getElementById('add-employee-modal-content');
+
+    modal.style.display = 'block';
+    setTimeout(() => {
+        modal.classList.add('show');
+        modalContent.classList.add('show');
+    }, 10);
+}
+
+function closeAddEmployeeModal() {
+    const modal = document.getElementById('add-employee-modal');
+    const modalContent = document.getElementById('add-employee-modal-content');
+
+    modal.classList.remove('show');
+    modalContent.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 500);
+}
+
+async function addEmployee() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const ic = document.getElementById('ic').value;
+    const password = document.getElementById('password').value;
+    try {
+        const response = await fetch('/api/employees', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, ic, password })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            closeAddEmployeeModal();
+            populateEmployeeTable();
+        } else {
+            console.error('Failed to add employee:', data.message);
+        }
+    } catch (error) {
+        console.error('Error adding employee:', error);
+    }
 }
