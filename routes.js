@@ -310,6 +310,29 @@ router.post('/api/employees', multer().none(), async (req, res) => {
     });
 });
 
+router.put('/api/employees/:id', multer().none(), async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    // Validate the form data
+    if (!password) {
+        return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+
+    // Hash the password
+    const hashedPassword = await common.hashPassword(password);
+
+    // Update the employee's password
+    const query = 'UPDATE users SET password_hash = ? WHERE user_id = ?';
+    db.query(query, [hashedPassword, id], (err, results) => {
+        if (err) {
+            console.error('Error updating employee:', err);
+            return res.status(500).json({ success: false, message: 'Database query failed', err });
+        }
+        res.json({ success: true, message: 'Employee updated successfully' });
+    });
+});
+
 
 // Route to handle image uploads
 router.post('/upload', (req, res) => {

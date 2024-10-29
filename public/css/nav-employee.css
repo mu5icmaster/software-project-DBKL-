@@ -26,7 +26,7 @@
 
 }
 
-.delete-employee-button {
+.modify-employee-button {
     border-radius: 8px;
     height: 32px;
     width: 32px;
@@ -38,7 +38,7 @@
     background-color: white;
 }
 
-.delete-employee-button img {
+.modify-employee-button img {
     width: 24px;
     height: 24px;
 }
@@ -138,6 +138,10 @@ td {
     border-radius: 8px;
 }
 
+.modal-content#modify-employee-modal-content {
+    width: 30%;
+}
+
 .modal-content::before {
     content: '';
     position: absolute;
@@ -196,6 +200,12 @@ td {
 }
 
 input[type="text"] {
+    height: 4px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input[type="password"] {
     height: 4px;
     padding: 10px;
     font-size: 16px;
