@@ -26,7 +26,12 @@
                     <td>Row 1 Data 2</td>
                     <td>Row 1 Data 3</td>
                     <td>Row 1 Data 4</td>
-                    <td><button class="modify-address-button"><img src="images/edit.svg"></button></td>
+                    <td>
+                        <div class="action-button-container">
+                            <button class="modify-address-button"><img src="images/edit.svg"></button>
+                            <button class="modify-image-button"><img src="images/image.svg"></button>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -40,7 +45,7 @@
                 <span class="close">&times;</span>
             </div>
             <form id="modifyAddressForm">
-                <input type="hidden" id="userID" name="userID">
+                <input type="hidden" id="address-userID" name="userID">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="name">Name:</label>
@@ -88,6 +93,28 @@
                 <div class="submit-button-container">
                     <button class="cancel-button" type="button">Cancel</button>
                     <button class="submit-button" type="submit">Change Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modify Image Modal -->
+    <div id="modify-image-modal" class="modal">
+        <div id="modify-image-modal-content" class="modal-content">
+            <div class="modal-title-container">
+                <h2>Modify Image</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="modify-image-form">
+                <input type="hidden" id="image-userID" name="userID">
+                <img src="images/image-preview.svg" alt="Image Preview" id="image-preview"/>
+                <div class="form-group">
+                    <label for="image-file">Choose an image:</label>
+                    <input type="file" id="image-file" name="image-file" accept="image/*">
+                </div>
+                <div class="submit-button-container">
+                    <button class="cancel-button" type="button">Cancel</button>
+                    <button class="submit-button" type="submit">Upload Image</button>
                 </div>
             </form>
         </div>

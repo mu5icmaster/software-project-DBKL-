@@ -288,7 +288,7 @@ router.post('/register', multer().none(), async (req, res) => {
     });
 });
 
-router.post('/api/employees', multer().none(), async (req, res) => {
+router.post('/api/employees', common.isAuthenticated, common.isAdmin, multer().none(), async (req, res) => {
     const { name, email, ic, password } = req.body;
 
     // Validate the form data
@@ -310,7 +310,7 @@ router.post('/api/employees', multer().none(), async (req, res) => {
     });
 });
 
-router.put('/api/employees/:id', multer().none(), async (req, res) => {
+router.put('/api/employees/:id', common.isAuthenticated, common.isAdmin, multer().none(), async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
 
@@ -330,6 +330,40 @@ router.put('/api/employees/:id', multer().none(), async (req, res) => {
             return res.status(500).json({ success: false, message: 'Database query failed', err });
         }
         res.json({ success: true, message: 'Employee updated successfully' });
+    });
+});
+
+router.put('/api/images/:id', common.isAuthenticated, common.isAdmin, multer().none(), async (req, res) => {
+    console.log('Updating image:', req.body);
+
+    const { id } = req.params;
+    const { image } = req.body;
+
+    const matches = image.match(/^data:image\/(\w+);base64,/);
+    if (!matches) {
+        console.error('Invalid image data');
+        return res.status(400).json({ success: false, error: 'Invalid image data' });
+    }
+
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+    const { imageName, imagePath } = common.generateUniqueFileName();
+
+    // Save the image to the server
+    fs.writeFile(imagePath, base64Data, 'base64', (err) => {
+        if (err) {
+            console.error('Error saving image:', err);
+            return res.status(500).json({ success: false, error: 'Failed to save image' });
+        }
+
+        // Update the image path and location data in the MySQL database
+        const query = 'UPDATE users SET image_path =? WHERE user_id = ?';
+        db.query(query, [`/uploads/${imageName}`, id], (err, result) => {
+            if (err) {
+                console.error('Error updating image:', err);
+                return res.status(500).json({ success: false, error: 'Failed to update image' });
+            }
+            res.json({ success: true, message: 'Image updated successfully' });
+        });
     });
 });
 
@@ -362,7 +396,7 @@ router.post('/upload', (req, res) => {
     });
 });
 
-router.post('/update-address', multer().none(), async (req, res) => {
+router.post('/update-address', common.isAuthenticated, common.isAdmin, multer().none(), async (req, res) => {
     const { userID, address, city, state, zipcode } = req.body;
     const { latitude, longitude } = await common.getCoordinates(`${address} ${zipcode} ${city} ${state}`);
 
