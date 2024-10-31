@@ -96,7 +96,11 @@ function populateEmployeeTable() {
                     employee.role.charAt(0).toUpperCase() + employee.role.slice(1),
                     employee.email,
                     employee.last_activity,
-                    `<button id="user_id_${employee.user_id}" class="modify-employee-button"><img src="images/edit.svg"></button>`
+                    `
+                    <div class="action-button-container">
+                        <button id="user_id_${employee.user_id}" class="modify-employee-button"><img src="images/edit.svg"></button>
+                    </div>
+                    `
                 ]);
             });
             table.draw();

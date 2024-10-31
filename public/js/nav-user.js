@@ -21,8 +21,7 @@ function initialize() {
     // Add event listener to handle modify address button clicks
     $('#user-table tbody').on('click', 'button.modify-address-button', function () {
         const userID = this.id.split('_')[2];
-        showModifyAddressModal(
-        );
+        showModifyAddressModal(userID);
     });
 
     // Add event listener to handle modify image button clicks
@@ -179,7 +178,7 @@ async function submitModifyAddressForm() {
 
         if (data.success) {
             alert('User updated successfully!');
-            closeModifyAddressModal();
+            closeModal('modify-address-modal');
             populateUserTable();
         } else {
             alert(`Failed to update user: ${data.message}`);
