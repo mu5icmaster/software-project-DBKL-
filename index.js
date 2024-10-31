@@ -8,6 +8,8 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2');
+const fileUpload = require('express-fileupload'); // Add file upload middleware
+const { execFile } = require('child_process'); // To execute the Python script
 
 const app = express();
 
@@ -32,6 +34,7 @@ db.connect((err) => {
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '50mb' })); // For image uploads
+app.use(fileUpload()); // Middleware to handle file uploads
 
 // Session configuration
 app.use(session({
@@ -59,6 +62,36 @@ function getLocalIpAddress() {
     }
     return 'localhost';
 }
+
+// Facial Recognition Route
+app.post("/api/compare-face", (req, res) => {
+    if (!req.files || !req.files.uploadedImage || !req.files.capturedImage) {
+        return res.status(400).json({ message: "Please upload and capture images." });
+    }
+
+    const uploadedFile = req.files.uploadedImage;
+    const capturedFile = req.files.capturedImage;
+
+    const uploadPath = path.join(__dirname, "uploads", uploadedFile.name);
+    const capturedPath = path.join(__dirname, "uploads", capturedFile.name);
+
+    uploadedFile.mv(uploadPath, (err) => {
+        if (err) return res.status(500).json({ message: "File upload failed for uploaded image" });
+
+        capturedFile.mv(capturedPath, (err) => {
+            if (err) return res.status(500).json({ message: "File upload failed for captured image" });
+
+            execFile("python", ["compare-face.py", uploadPath, capturedPath], (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error: ${stderr}`);
+                    return res.status(500).json({ message: "Face comparison failed" });
+                }
+
+                res.json({ message: stdout.trim() });
+            });
+        });
+    });
+});
 
 // HTTPS options
 const options = {

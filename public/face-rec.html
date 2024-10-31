@@ -1,0 +1,32 @@
+<!-- public/face-rec.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/face-rec.css">
+    <title>Facial Recognition</title>
+</head>
+<body>
+    <h1>Facial Recognition</h1>
+    
+    <div class="upload-section">
+        <h2>Upload a Picture</h2>
+        <input type="file" id="fileInput" accept="image/*" required>
+        <img id="uploadedImage" alt="Uploaded Image" style="display: none;">
+    </div>
+
+    <div class="webcam-section">
+        <h2>Capture Your Face</h2>
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <button id="captureButton">Capture</button>
+        <img id="capturedImage" alt="Captured Image" style="display: none;">
+    </div>
+
+    <button id="compareButton">Upload and Compare</button>
+    <div id="result"></div>
+    
+    <script src="/js/face-rec.js"></script>
+</body>
+</html>
