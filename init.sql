@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `address` (
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     role_id INT NOT NULL DEFAULT 2,
+    status ENUM('verified', 'suspicious', 'unverified') DEFAULT 'unverified' NOT NULL,
     address_id INT,
     user_name VARCHAR(100) NOT NULL,
     user_email VARCHAR(100) NOT NULL UNIQUE,
