@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const uuidv4 = require('uuid').v4;
+const { PythonShell } = require('python-shell');
+
 
 /* See bottom of https://pypi.org/project/bcrypt/ for explanation */
 async function hashPassword(password) {
@@ -76,7 +78,8 @@ function updateUserStatus(userID, connection) {
         SELECT
             im.latitude,
             im.longitude,
-            im.image_path,
+            im.image_path AS captured_image_path,
+            u.image_path AS uploaded_image_path,
             im.created_at,
             a.latitude AS address_latitude,
             a.longitude AS address_longitude
@@ -128,14 +131,17 @@ function updateUserStatus(userID, connection) {
             return;
         }
 
+        const capturedImagePath = user.captured_image_path;
+        const uploadedImagePath = user.uploaded_image_path;
+
+        const image_verified = compareImages(capturedImagePath, uploadedImagePath);
+
         const latitude = user.latitude;
         const longitude = user.longitude;
         const address_latitude = user.address_latitude;
         const address_longitude = user.address_longitude;
 
-
-
-        if (compareLocations(latitude, address_latitude, longitude, address_longitude)) {
+        if (compareLocations(latitude, address_latitude, longitude, address_longitude) && image_verified) {
             const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
             connection.query(query, ['verified', userID], (error, results) => {
                 if (error) {
@@ -160,8 +166,34 @@ function updateUserStatus(userID, connection) {
                 }
             });
         }
+    });
+}
 
-        
+function compareImages(imagePath1, imagePath2) {
+    const scriptPath = path.join(__dirname, 'compare-face.py');
+    const options = {
+        mode: 'text',
+        args: [imagePath1, imagePath2]
+    };
+
+    PythonShell.run(scriptPath, options, (err, results) => {
+        if (err) {
+            console.error('Failed to compare images:', err);
+            return callback(err, null);
+        }
+
+        try {
+            const result = JSON.parse(results[0]);
+            if (result.error) {
+                console.error('Error from Python script:', result.error);
+                return callback(new Error(result.error), null);
+            }
+            const verified = result.verified;
+            return verified;
+        } catch (parseError) {
+            console.error('Failed to parse JSON:', parseError);
+            return false;
+        }
     });
 }
 
