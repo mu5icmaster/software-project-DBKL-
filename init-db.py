@@ -99,11 +99,17 @@ def run_init_sql():
     hashed_password = bcrypt.hashpw(
         base64.b64encode(hashlib.sha256(ADMIN_PASSWORD.encode()).digest()),
         bcrypt.gensalt(),
-    ).decode("utf-8")
+    ).decode("utf-8")       
 
     with open("init.sql", "r") as f:
         sql = f.read()
         sql = sql.replace("ADMIN_PASSWORD_HASH", hashed_password)
+        
+    subprocess.run(
+        ["docker", "exec", "-i", "mysql_container", "mysql", "-uroot", "-pPass1"],
+        input="DROP DATABASE IF EXISTS rental_website;\n".encode("utf-8"),
+        check=True,
+    )
 
     subprocess.run(
         ["docker", "exec", "-i", "mysql_container", "mysql", "-uroot", "-pPass1"],

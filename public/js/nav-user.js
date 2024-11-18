@@ -24,32 +24,74 @@ function initialize() {
         showModifyAddressModal(userID);
     });
 
-    // Add event listener to close the modal
-    document.querySelector('.modal .close').addEventListener('click', function () {
-        closeModifyAddressModal();
+    // Add event listener to handle modify image button clicks
+    $('#user-table tbody').on('click', 'button.modify-image-button', function () {
+        const userID = this.id.split('_')[2];
+        showModifyImageModal(userID);
     });
 
-    document.querySelector('.cancel-button').addEventListener('click', function () {
-        closeModifyAddressModal();
-    });
+    // Add event listener to close the modal
+    document.getElementById('modify-address-modal')
+        .querySelector('.close')
+        .addEventListener('click', function () {
+            closeModal('modify-address-modal');
+        }
+        );
+
+    document.getElementById('modify-address-modal')
+        .querySelector('.cancel-button')
+        .addEventListener('click', function () {
+            closeModal('modify-address-modal');
+        }
+        );
+
+    document.getElementById('modify-image-modal')
+        .querySelector('.close')
+        .addEventListener('click', function () {
+            closeModal('modify-image-modal');
+        }
+        );
+
+    document.getElementById('modify-image-modal')
+        .querySelector('.cancel-button')
+        .addEventListener('click', function () {
+            closeModal('modify-image-modal');
+        }
+        );
 
     // Close modal when clicking outside of the modal content
     window.onclick = function (event) {
-        const modal = document.getElementById('modify-address-modal');
-        if (event.target == modal) {
-            closeModifyAddressModal();
-        }
-    };
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target == modal) {
+                closeModal(modal.id);
+            }
+        });
+    }
 
     document.getElementById('modifyAddressForm').addEventListener('submit', function (event) {
-        event.preventDefault(); 
-        submitForm(); 
+        event.preventDefault();
+        submitModifyAddressForm();
+    });
+
+    document.getElementById('modify-image-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        submitModifyImageForm();
+    });
+
+    document.getElementById('image-file').addEventListener('change', function () {
+        const file = this.files[0];
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('image-preview').src = reader.result;
+        };
+        reader.readAsDataURL(file);
     });
 }
 
 function populateUserTable() {
     fetch('/api/users')
-    .then(response => response.json())
+        .then(response => response.json())
         .then(data => {
             if (!data.success) {
                 console.error('Failed to fetch users:', data.message);
@@ -64,7 +106,12 @@ function populateUserTable() {
                     user.user_email,
                     user.user_ic,
                     user.address,
-                    `<button id="user_id_${user.user_id}" class="modify-address-button"><img src="images/edit.svg"></button>`
+                    `
+                    <div class="action-button-container">
+                        <button id="user_id_${user.user_id}" class="modify-address-button"><img src="images/edit.svg"></button>
+                        <button id="user_id_${user.user_id}" class="modify-image-button"><img src="images/image.svg"></button>
+                    </div>
+                    `
                 ]).draw();
             });
         })
@@ -80,7 +127,7 @@ function showModifyAddressModal(userID) {
                 return;
             }
             const user = data.user;
-            document.getElementById('userID').value = userID;
+            document.getElementById('address-userID').value = userID;
             document.getElementById('name').value = user.user_name;
             document.getElementById('email').value = user.user_email;
             document.getElementById('address').value = user.address_line;
@@ -95,24 +142,25 @@ function showModifyAddressModal(userID) {
             setTimeout(() => {
                 modal.classList.add('show');
                 modalContent.classList.add('show');
-            }, 10); 
+            }, 10);
         })
         .catch(error => console.error('Error fetching user:', error));
 }
 
 
-function closeModifyAddressModal() {
-    const modal = document.getElementById('modify-address-modal');
-    const modalContent = document.querySelector('.modal-content');
+function closeModal(modal_id) {
+    const modal = document.getElementById(modal_id);
+    const modalContent = document.getElementById(`${modal_id}-content`);
 
     modal.classList.remove('show');
     modalContent.classList.remove('show');
+
     setTimeout(() => {
         modal.style.display = 'none';
     }, 500);
 }
 
-async function submitForm() {
+async function submitModifyAddressForm() {
     const formData = new FormData(document.getElementById('modifyAddressForm'));
 
     if (!formData.get('address') || !formData.get('city') || !formData.get('state') || !formData.get('zipcode')) {
@@ -130,7 +178,7 @@ async function submitForm() {
 
         if (data.success) {
             alert('User updated successfully!');
-            closeModifyAddressModal();
+            closeModal('modify-address-modal');
             populateUserTable();
         } else {
             alert(`Failed to update user: ${data.message}`);
@@ -139,4 +187,67 @@ async function submitForm() {
         console.error('Error:', error);
         alert('Failed to update user');
     }
+}
+
+function showModifyImageModal(userID) {
+    const modal = document.getElementById('modify-image-modal');
+    const modalContent = document.getElementById('modify-image-modal-content');
+
+    document.getElementById('image-userID').value = userID;
+
+    modal.style.display = 'block';
+    setTimeout(() => {
+        modal.classList.add('show');
+        modalContent.classList.add('show');
+    }, 10);
+}
+
+function submitModifyImageForm() {
+    const fileInput = document.getElementById('image-file');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Please select an image');
+        return;
+    }
+
+    const formData = new FormData(document.getElementById('modify-image-form'));
+    const userID = formData.get('userID');
+    if (!userID) {
+        alert('User ID is missing');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const base64Image = e.target.result;
+
+        fetch(`/api/images/${userID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Image })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('User updated successfully!');
+                    closeModal('modify-image-modal');
+                    populateUserTable();
+                } else {
+                    alert(`Failed to update user: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update user');
+            });
+    };
+    reader.readAsDataURL(file);
 }

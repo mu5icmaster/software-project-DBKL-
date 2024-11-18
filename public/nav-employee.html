@@ -1,5 +1,5 @@
 <div class="title-container">
-    <h2>Employeen</h2>
+    <h2>Employee</h2>
 </div>
 
 <div class="table-container">
@@ -20,8 +20,65 @@
                 <td>Row 1 Data 2</td>
                 <td>Row 1 Data 3</td>
                 <td>Row 1 Data 4</td>
-                <td><button class="delete-employee-button"><img src="images/edit.svg"></button></td>
+                <td><button class="modify-employee-button"><img src="images/edit.svg"></button></td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Modal Structure -->
+    <div id="add-employee-modal" class="modal">
+        <div id="add-employee-modal-content" class="modal-content">
+            <div class="modal-title-container">
+                <h2>Add Employee</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="add-employee-form">
+                <input type="hidden" id="userID" name="userID">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="add-name" name="name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="ic">IC:</label>
+                        <input type="text" id="add-ic" name="ic" placeholder="IC">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" id="add-email" name="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="add-password" name="password" placeholder="Password">
+                    </div>
+                </div>
+                <div class="submit-button-container">
+                    <button class="cancel-button" type="button">Cancel</button>
+                    <button class="submit-button" type="submit">Add Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modify-employee-modal" class="modal">
+        <div id="modify-employee-modal-content" class="modal-content">
+            <div class="modal-title-container">
+                <h2>Modify Employee</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="modify-employee-form">
+                <input type="hidden" id="modify-userID" name="userID">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="password">Password:</label>
+                        <input type="password" id="modify-password" name="password" placeholder="Password">
+                    </div>
+                </div>
+                <div class="submit-button-container">
+                    <button class="cancel-button" type="button">Cancel</button>
+                    <button class="submit-button" type="submit">Modify Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

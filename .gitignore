@@ -81,7 +81,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
+# .env UNCOMMENT IF REPO IS PUBLIC
 .env.development.local
 .env.test.local
 .env.production.local

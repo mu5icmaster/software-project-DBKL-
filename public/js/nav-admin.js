@@ -18,10 +18,10 @@ function initialize() {
     });
     populateAdminTable();
 
-    // Add event listener to handle modify address button clicks
+    // Add event listener to handle verify tenant button clicks
     $('#admin-table tbody').on('click', 'button.verify-tenant-button', function () {
         const userID = this.id.split('_')[2];
-        window.href='verify-tenant.html'
+        window.location.href=`user.html?user_id=${userID}`;
     });
 }
 
@@ -38,19 +38,23 @@ function populateAdminTable() {
             table.clear();
             users.forEach(user => {
                 let statusChip = "";
-                if (user.status === 'Verified') {
+                if (user.status === 'verified') {
                     statusChip = '<span class="chip green">Verified</span>';
-                } else if (user.status === 'Suspicious') {
-                    statusChip = '<span class="chip red">Suspicious</span>';
-                } else {
+                } else if (user.status === 'suspicious') {
                     statusChip = '<span class="chip orange">Attention</span>';
+                } else {
+                    statusChip = '<span class="chip red">Unverified</span>';
                 }
                 table.row.add([
                     user.name, 
                     user.address, 
                     statusChip,
                     user.created_at, 
-                    `<button id="user_id_${user.user_id}" class="verify-tenant-button"><img src="images/edit.svg"></button>`
+                    `
+                    <div class="action-button-container">
+                        <button id="user_id_${user.id}" class="verify-tenant-button"><img src="images/image.svg"></button>
+                    </div>
+                    `
                 ]);
             });
             table.draw();

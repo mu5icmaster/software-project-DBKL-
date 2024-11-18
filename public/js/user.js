@@ -37,9 +37,7 @@ function nextStep() {
 }
 
 async function submit() {
-    const sessionResponse = await fetch('/session-info');
-    const sessionData = await sessionResponse.json();
-    const userID = sessionData.userID;
+    const userID = await getUserID();
 
     const image = captureCamera();
     const latitude = localStorage.getItem('latitude');
@@ -115,3 +113,22 @@ function captureCamera() {
     return imageData;
 }
 
+async function getUserID() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userID = urlParams.get('userID');
+
+    if (userID) {
+        const sessionResponse = await fetch('/session-info');
+        const sessionData = await sessionResponse.json();
+
+        if (sessionData.userRole == 'admin') {
+            return userID;
+        } else {
+            alert('You do not have permission to access this user ID.');
+        }
+    } else {
+        const sessionResponse = await fetch('/session-info');
+        const sessionData = await sessionResponse.json();
+        return sessionData.userID;
+    }
+}
