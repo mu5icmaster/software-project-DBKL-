@@ -19,8 +19,6 @@ router.get('/user.html', common.isAuthenticated, (req, res) => {
     if (req.session.userRole === 'admin') {
         const userID = req.query.user_id;
 
-        common.updateUserStatus(userID, db);
-
         db.query('SELECT status FROM users WHERE user_id = ?', [userID], (err, results) => {
             if (err) {
                 console.error('Error fetching user status:', err);
@@ -36,8 +34,6 @@ router.get('/user.html', common.isAuthenticated, (req, res) => {
         });
     } else {
         const userID = req.session.userID;
-
-        common.updateUserStatus(userID, db);
 
         db.query('SELECT status FROM users WHERE user_id = ?', [userID], (err, results) => {
             if (err) {
@@ -107,17 +103,6 @@ router.get('/api/users', common.isAuthenticated, common.isAdmin, (req, res) => {
 });
 
 router.get('/api/admin', common.isAuthenticated, common.isAdmin, (req, res) => {
-    db.query('SELECT user_id FROM users WHERE role_id = 2', (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Database query failed' });
-        }
-
-        const userIDs = results.map(result => result.user_id);
-        userIDs.forEach(userID => {
-            common.updateUserStatus(userID, db);
-        });
-    });
-
     const query = `
         SELECT
             u.user_id AS id,
@@ -173,17 +158,6 @@ router.get('/api/employees', common.isAuthenticated, common.isAdmin, (req, res) 
 
 
 router.get('/api/locations', common.isAuthenticated, common.isAdmin, (req, res) => {
-    db.query('SELECT user_id FROM users WHERE role_id = 2', (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Database query failed' });
-        }
-
-        const userIDs = results.map(result => result.user_id);
-        userIDs.forEach(userID => {
-            common.updateUserStatus(userID, db);
-        });
-    });
-
     const query = `
         SELECT 
             a.latitude, a.longitude, i.image_path, u.status
@@ -204,9 +178,9 @@ router.get('/api/locations', common.isAuthenticated, common.isAdmin, (req, res) 
 
         if (results.length > 0) {
             results.forEach(result => {
-                if (result.status === 'Verified') {
+                if (result.status === 'verified') {
                     result.color = 'green';
-                } else if (result.status === 'Suspicious') {
+                } else if (result.status === 'suspicious') {
                     result.color = 'yellow';
                 } else {
                     result.color = 'red';
@@ -394,6 +368,7 @@ router.put('/api/images/:id', common.isAuthenticated, common.isAdmin, multer().n
                 console.error('Error updating image:', err);
                 return res.status(500).json({ success: false, error: 'Failed to update image' });
             }
+            common.updateUserStatus(id, db);
             res.json({ success: true, message: 'Image updated successfully' });
         });
     });
@@ -423,6 +398,7 @@ router.post('/upload', (req, res) => {
                 return res.status(500).json({ success: false, error: 'Failed to save data to database' });
             }
 
+            common.updateUserStatus(userID, db);
             res.json({ success: true, message: 'Image and data saved successfully' });
         });
     });
@@ -479,6 +455,7 @@ router.post('/update-address', common.isAuthenticated, common.isAdmin, multer().
                     console.error('Error updating address:', err);
                     return res.status(500).json({ success: false, message: 'Database query failed', err });
                 }
+                common.updateUserStatus(userID, db);
                 res.json({ success: true, message: 'Address updated successfully' });
             });
         }

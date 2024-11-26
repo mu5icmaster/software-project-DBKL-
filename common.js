@@ -9,7 +9,7 @@ const { PythonShell } = require('python-shell');
 /* See bottom of https://pypi.org/project/bcrypt/ for explanation */
 async function hashPassword(password) {
     const sha256Hash = crypto.createHash('sha256').update(password).digest('base64');
-    const hashedPassword = await bcrypt.hash(sha256Hash, await bcrypt.genSalt(rounds=12));
+    const hashedPassword = await bcrypt.hash(sha256Hash, await bcrypt.genSalt(rounds = 12));
     return hashedPassword;
 }
 
@@ -51,7 +51,7 @@ function isAdmin(req, res, next) {
 async function getCoordinates(address) {
     const sanitizedAddress = address.replace(/ /g, '%20').replace(/,/g, '');
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${sanitizedAddress}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
-    
+
     const response = await fetch(url);
     const data = await response.json();
 
@@ -61,7 +61,7 @@ async function getCoordinates(address) {
     } else {
         return { latitude: 0, longitude: 0 };
     }
-} 
+}
 
 function compareLocations(latitude, address_latitude, longitude, address_longitude) {
     const THRESHOLD = 0.01;
@@ -73,7 +73,7 @@ function compareLocations(latitude, address_latitude, longitude, address_longitu
     }
 }
 
-function updateUserStatus(userID, connection) {
+async function updateUserStatus(userID, connection) {
     const query = `
         SELECT
             im.latitude,
@@ -119,7 +119,7 @@ function updateUserStatus(userID, connection) {
             u.user_id = ?;
     `; // JFC I hate this query
 
-    connection.query(query, [userID], (error, results) => {
+    connection.query(query, [userID], async (error, results) => {
         if (error) {
             console.error('Failed to fetch user status:', error);
             return;
@@ -131,69 +131,75 @@ function updateUserStatus(userID, connection) {
             return;
         }
 
-        const capturedImagePath = user.captured_image_path;
-        const uploadedImagePath = user.uploaded_image_path;
-
-        const image_verified = compareImages(capturedImagePath, uploadedImagePath);
+        const capturedImagePath = user.captured_image_path ? path.join(__dirname, user.captured_image_path) : null;
+        const uploadedImagePath = user.uploaded_image_path ? path.join(__dirname, user.uploaded_image_path) : null;
+        // console.log('Captured image path:', capturedImagePath);
+        // console.log('Uploaded image path:', uploadedImagePath);
 
         const latitude = user.latitude;
         const longitude = user.longitude;
         const address_latitude = user.address_latitude;
         const address_longitude = user.address_longitude;
 
-        if (compareLocations(latitude, address_latitude, longitude, address_longitude) && image_verified) {
-            const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
-            connection.query(query, ['verified', userID], (error, results) => {
-                if (error) {
-                    console.error('Failed to update user status:', error);
-                    return;
-                }
-            });
-        } else if (latitude === null || longitude === null) {
-            const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
-            connection.query(query, ['unverified', userID], (error, results) => {
-                if (error) {
-                    console.error('Failed to update user status:', error);
-                    return;
-                }
-            });
-        } else {
-            const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
-            connection.query(query, ['suspicious', userID], (error, results) => {
-                if (error) {
-                    console.error('Failed to update user status:', error);
-                    return;
-                }
-            });
-        }
+        image_verified = await compareImages(capturedImagePath, uploadedImagePath);
+        checkUserStatus(userID, connection, image_verified, latitude, longitude, address_latitude, address_longitude);
     });
 }
 
-function compareImages(imagePath1, imagePath2) {
-    const scriptPath = path.join(__dirname, 'compare-face.py');
-    const options = {
-        mode: 'text',
-        args: [imagePath1, imagePath2]
-    };
-
-    PythonShell.run(scriptPath, options, (err, results) => {
-        if (err) {
-            console.error('Failed to compare images:', err);
-            return callback(err, null);
-        }
-
-        try {
-            const result = JSON.parse(results[0]);
-            if (result.error) {
-                console.error('Error from Python script:', result.error);
-                return callback(new Error(result.error), null);
+function checkUserStatus(userID, connection, image_verified, latitude, longitude, address_latitude, address_longitude) {
+    console.log('Checking user status:', userID, image_verified, latitude, longitude, address_latitude, address_longitude);
+    if (compareLocations(latitude, address_latitude, longitude, address_longitude) && image_verified) {
+        const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
+        connection.query(query, ['verified', userID], (error, results) => {
+            if (error) {
+                console.error('Failed to update user status:', error);
+                return;
             }
-            const verified = result.verified;
-            return verified;
-        } catch (parseError) {
-            console.error('Failed to parse JSON:', parseError);
-            return false;
-        }
+        });
+    } else if (latitude === null || longitude === null) {
+        const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
+        connection.query(query, ['unverified', userID], (error, results) => {
+            if (error) {
+                console.error('Failed to update user status:', error);
+                return;
+            }
+        });
+    } else {
+        const query = 'UPDATE users SET status = ? WHERE user_id = ?;';
+        connection.query(query, ['suspicious', userID], (error, results) => {
+            if (error) {
+                console.error('Failed to update user status:', error);
+                return;
+            }
+        });
+    }
+}
+
+function compareImages(imagePath1, imagePath2) {
+    return new Promise((resolve, reject) => {
+        console.log('Comparing images:', imagePath1, imagePath2);
+        const scriptPath = path.join(__dirname, 'compare-face.py');
+        const options = {
+            mode: 'json',
+            pythonOptions: ['-u'],
+            args: [imagePath1, imagePath2]
+        };
+
+        console.log('Running Python script:', scriptPath);
+        console.log('Options:', options);
+        PythonShell.run(scriptPath, options).then((results) => {
+            console.log('Results:', results);
+            try{
+                result = results[0];
+                image_verify = result.verified ? true : false;
+                console.log('Image verification:', image_verify);
+                resolve(image_verify);
+            } catch (error) {
+                console.error('Failed to parse JSON:', error);
+                resolve(false);
+            }
+            resolve('script ran');
+        });
     });
 }
 
@@ -205,7 +211,8 @@ module.exports = {
     isAdmin,
     getCoordinates,
     compareLocations,
-    updateUserStatus
+    updateUserStatus,
+    compareImages
 };
 
 /*
